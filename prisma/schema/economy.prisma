@@ -2,7 +2,7 @@ model Transaction {
   id     String @id @default(cuid())
   userId String
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
   
   type        TransactionType
   amount      Int
@@ -33,7 +33,6 @@ model ShopItem {
   isActive      Boolean @default(true)
   dailyLimit    Int? // Limite por dia por usuário
   totalLimit    Int? // Limite total
-  purchased     Int @default(0) // Total vendido
   
   // Disponibilidade
   availableFrom DateTime?
@@ -42,27 +41,7 @@ model ShopItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   
-  // Relacionamentos
-  purchases ShopPurchase[]
-  
   @@map("shop_items")
-}
-
-model ShopPurchase {
-  id       String @id @default(cuid())
-  userId   String
-  itemId   String
-  quantity Int @default(1)
-  
-  user User     @relation(fields: [userId], references: [id])
-  item ShopItem @relation(fields: [itemId], references: [id])
-  
-  totalPrice Int
-  currency   Currency
-  
-  purchasedAt DateTime @default(now())
-  
-  @@map("shop_purchases")
 }
 
 enum TransactionType {
@@ -86,4 +65,21 @@ enum ShopItemType {
   EVOLUTION_MATERIAL
   CURRENCY_PACK
   COSMETIC
+}
+
+model ShopPurchase {
+  id       String @id @default(cuid())
+  userId   String
+  itemId   String
+  quantity Int @default(1)
+  
+  user User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item ShopItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  
+  totalPrice Int
+  currency   Currency
+  
+  purchasedAt DateTime @default(now())
+  
+  @@map("shop_purchases")
 }

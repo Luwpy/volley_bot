@@ -29,8 +29,6 @@ model Match {
   sets        MatchSet[]
   events      MatchEvent[]
   rewards     MatchReward[]
-  momentum    GameMomentum[]
-  playerStats PlayerMatchStats[]
   
   // Sistema de narrativa
   narratorType NarratorType @default(STANDARD)
@@ -40,11 +38,11 @@ model Match {
 }
 
 model MatchSet {
-  id        String @id @default(cuid())
-  matchId   String
+  id      String @id @default(cuid())
+  matchId String
   setNumber Int
   
-  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  match Match @relation(fields: [matchId], references: [id])
   
   homePoints Int @default(0)
   awayPoints Int @default(0)
@@ -55,29 +53,6 @@ model MatchSet {
   
   @@unique([matchId, setNumber])
   @@map("match_sets")
-}
-
-model MatchReward {
-  id      String @id @default(cuid())
-  matchId String
-  userId  String
-  
-  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
-  
-  // Recompensas
-  coinsEarned Int @default(0)
-  gemsEarned  Int @default(0)
-  xpEarned    Int @default(0)
-  
-  // Tipo de recompensa
-  rewardType RewardType
-  reason     String // "victory", "participation", "achievement"
-  
-  claimed   Boolean @default(false)
-  claimedAt DateTime?
-  createdAt DateTime @default(now())
-  
-  @@map("match_rewards")
 }
 
 enum MatchType {
@@ -100,12 +75,4 @@ enum NarratorType {
   ENTHUSIASTIC
   TECHNICAL
   DRAMATIC
-}
-
-enum RewardType {
-  MATCH_VICTORY
-  MATCH_PARTICIPATION
-  ACHIEVEMENT_UNLOCK
-  DAILY_BONUS
-  SPECIAL_EVENT
 }

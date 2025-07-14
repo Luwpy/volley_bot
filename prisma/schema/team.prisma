@@ -5,7 +5,7 @@ model Team {
   formation TeamFormation @default(SIX_ZERO)
   isActive Boolean @default(true)
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
   
   // Slots do time (6 titulares + reservas)
   slots     TeamSlot[]
@@ -29,8 +29,8 @@ model TeamSlot {
   teamId   String
   playerId String?
   
-  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  player Player? @relation(fields: [playerId], references: [id], onDelete: SetNull)
+  team   Team    @relation(fields: [teamId], references: [id])
+  player Player? @relation(fields: [playerId], references: [id])
   
   position    SlotPosition
   isStarter   Boolean @default(false)

@@ -25,11 +25,8 @@ model Player {
   createdAt   DateTime @default(now())
   
   // Relacionamentos
-  userPlayers   UserPlayer[]
-  teamSlots     TeamSlot[]
-  matchStats    PlayerMatchStats[]
-  rivalries1    PlayerRivalry[] @relation("Player1")
-  rivalries2    PlayerRivalry[] @relation("Player2")
+  userPlayers UserPlayer[]
+  teamSlots   TeamSlot[]
   
   // Personalidade para narrativa
   personality PlayerPersonality?
@@ -39,7 +36,7 @@ model Player {
 
 model PlayerPersonality {
   playerId    String @id
-  player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  player      Player @relation(fields: [playerId], references: [id])
   
   // Características para narrativa
   clutchFactor    Int @default(50) // 0-100, performance sob pressão

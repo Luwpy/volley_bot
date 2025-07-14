@@ -17,7 +17,6 @@ model Achievement {
   
   isActive   Boolean @default(true)
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
   
   // Usuários que desbloquearam
   userAchievements UserAchievement[]
@@ -29,8 +28,8 @@ model UserAchievement {
   userId        String
   achievementId String
   
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id])
+  achievement Achievement @relation(fields: [achievementId], references: [id])
   
   unlockedAt DateTime @default(now())
   progress   Json?    // Progresso atual para achievements incrementais

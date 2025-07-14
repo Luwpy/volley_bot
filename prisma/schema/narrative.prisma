@@ -16,9 +16,6 @@ model NarrativeTemplate {
   weight     Int @default(1) // Peso para seleção aleatória
   language   String @default("pt")
   
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
   @@map("narrative_templates")
 }
 
@@ -26,9 +23,6 @@ model PlayerRivalry {
   id          String @id @default(cuid())
   player1Id   String
   player2Id   String
-  
-  player1 Player @relation("Player1", fields: [player1Id], references: [id])
-  player2 Player @relation("Player2", fields: [player2Id], references: [id])
   
   // Histórico de confrontos
   totalMeetings Int @default(0)
@@ -44,7 +38,6 @@ model PlayerRivalry {
   
   lastMeeting   DateTime?
   createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
   
   @@unique([player1Id, player2Id])
   @@map("player_rivalries")
