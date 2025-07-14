@@ -1,0 +1,75 @@
+model Player {
+  id          String         @id @default(cuid())
+  name        String
+  position    PlayerPosition
+  rarity      PlayerRarity
+  nationality String
+  
+  // Atributos base (0-100)
+  attack      Int
+  block       Int
+  serve       Int
+  receive     Int
+  set         Int
+  defense     Int
+  overall     Int // Calculado automaticamente
+  
+  // Características físicas
+  height      Int? // cm
+  weight      Int? // kg
+  
+  // Meta informações
+  imageUrl    String?
+  description String?
+  
+  createdAt   DateTime @default(now())
+  
+  // Relacionamentos
+  userPlayers   UserPlayer[]
+  teamSlots     TeamSlot[]
+  matchStats    PlayerMatchStats[]
+  rivalries1    PlayerRivalry[] @relation("Player1")
+  rivalries2    PlayerRivalry[] @relation("Player2")
+  
+  // Personalidade para narrativa
+  personality PlayerPersonality?
+  
+  @@map("players")
+}
+
+model PlayerPersonality {
+  playerId    String @id
+  player      Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  
+  // Características para narrativa
+  clutchFactor    Int @default(50) // 0-100, performance sob pressão
+  aggressiveness  Int @default(50) // Estilo de jogo
+  consistency     Int @default(50) // Regularidade
+  leadership      Int @default(50) // Liderança em quadra
+  
+  // Tags especiais para narrativa
+  specialTags String[] // ["ace_specialist", "wall", "clutch_player"]
+  
+  // Frases características
+  victoryQuote String?
+  defeatQuote  String?
+  
+  @@map("player_personalities")
+}
+
+enum PlayerPosition {
+  SETTER      // Levantador
+  LIBERO      // Líbero
+  MIDDLE      // Central
+  OUTSIDE     // Ponteiro
+  OPPOSITE    // Oposto
+  UNIVERSAL   // Coringa
+}
+
+enum PlayerRarity {
+  BRONZE
+  SILVER
+  GOLD
+  DIAMOND
+  LEGENDARY
+}

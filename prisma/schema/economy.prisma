@@ -1,0 +1,89 @@
+model Transaction {
+  id     String @id @default(cuid())
+  userId String
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type        TransactionType
+  amount      Int
+  currency    Currency
+  description String
+  reference   String? // ID da partida, pacote, etc.
+  
+  // Saldo antes e depois
+  balanceBefore Int
+  balanceAfter  Int
+  
+  createdAt DateTime @default(now())
+  
+  @@map("transactions")
+}
+
+model ShopItem {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  price       Int
+  currency    Currency
+  
+  itemType    ShopItemType
+  content     Json // Conteúdo do item
+  
+  // Configurações
+  isActive      Boolean @default(true)
+  dailyLimit    Int? // Limite por dia por usuário
+  totalLimit    Int? // Limite total
+  purchased     Int @default(0) // Total vendido
+  
+  // Disponibilidade
+  availableFrom DateTime?
+  availableUntil DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relacionamentos
+  purchases ShopPurchase[]
+  
+  @@map("shop_items")
+}
+
+model ShopPurchase {
+  id       String @id @default(cuid())
+  userId   String
+  itemId   String
+  quantity Int @default(1)
+  
+  user User     @relation(fields: [userId], references: [id])
+  item ShopItem @relation(fields: [itemId], references: [id])
+  
+  totalPrice Int
+  currency   Currency
+  
+  purchasedAt DateTime @default(now())
+  
+  @@map("shop_purchases")
+}
+
+enum TransactionType {
+  MATCH_REWARD
+  PURCHASE
+  CARD_PACK
+  PLAYER_EVOLUTION
+  DAILY_REWARD
+  ACHIEVEMENT_REWARD
+  ADMIN_ADJUSTMENT
+}
+
+enum Currency {
+  COINS
+  GEMS
+}
+
+enum ShopItemType {
+  CARD_PACK
+  PLAYER
+  EVOLUTION_MATERIAL
+  CURRENCY_PACK
+  COSMETIC
+}

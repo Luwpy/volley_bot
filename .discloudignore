@@ -28,3 +28,4 @@
 *.zip
 *.exe
 *.development.json
+*.nix

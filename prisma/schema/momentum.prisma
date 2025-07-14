@@ -1,0 +1,69 @@
+model GameMomentum {
+  id      String @id @default(cuid())
+  matchId String
+  setNumber Int
+  pointNumber Int
+  
+  // Momentum por time (-100 a +100)
+  homeMomentum Int @default(0)
+  awayMomentum Int @default(0)
+  
+  // Fatores que influenciam
+  consecutivePoints Json // { "home": 3, "away": 0 }
+  lastEvents        Json // Últimos 5 eventos importantes
+  
+  // Estado psicológico
+  homePressure Int @default(50) // 0-100
+  awayPressure Int @default(50)
+  
+  // Torcida
+  crowdSupport String @default("neutral") // "home", "away", "neutral"
+  crowdLevel   Int @default(50)
+  
+  timestamp DateTime @default(now())
+  
+  @@unique([matchId, setNumber, pointNumber])
+  @@map("game_momentum")
+}
+
+model PlayerMatchStats {
+  id        String @id @default(cuid())
+  matchId   String
+  playerId  String
+  playerTeam String // "home" ou "away"
+  
+  // Estatísticas detalhadas
+  points       Int @default(0)
+  aces         Int @default(0)
+  serviceErrors Int @default(0)
+  
+  attacks      Int @default(0)
+  attackKills  Int @default(0)
+  attackErrors Int @default(0)
+  attackBlocked Int @default(0)
+  
+  blocks       Int @default(0)
+  blockSolos   Int @default(0)
+  blockAssists Int @default(0)
+  
+  digs         Int @default(0)
+  defenseErrors Int @default(0)
+  
+  receptions   Int @default(0)
+  receptionErrors Int @default(0)
+  
+  sets         Int @default(0)
+  setErrors    Int @default(0)
+  
+  // Performance contextual
+  clutchPlays     Int @default(0) // Jogadas decisivas
+  momentumShifts  Int @default(0) // Mudanças de momentum causadas
+  
+  // Eficiência (calculada)
+  attackEfficiency  Float @default(0.0)
+  receptionQuality  Float @default(0.0)
+  overallRating     Int @default(0)
+  
+  @@unique([matchId, playerId])
+  @@map("player_match_stats")
+}

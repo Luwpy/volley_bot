@@ -1,0 +1,138 @@
+model MatchEvent {
+  id        String @id @default(cuid())
+  matchId   String
+  setNumber Int
+  homePoints Int // Pontuação no momento do evento
+  awayPoints Int
+  
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  // Tipo do evento
+  eventType    EventType
+  subType      String? // Específico do evento (ace, attack_kill, etc)
+  
+  // Jogador responsável
+  playerId     String?
+  playerName   String // Nome para referência narrativa
+  playerTeam   String // "home" ou "away"
+  
+  // Contexto do lance
+  position     SlotPosition?
+  moment       GameMoment
+  pressure     Int @default(50) // 0-100, pressão psicológica
+  
+  // Dados técnicos para narrativa
+  technique    Json? // { "speed": 85, "precision": 92, "power": 78 }
+  
+  // Narrativa gerada
+  description  String // Descrição técnica
+  narrative    String // Narrativa dramatizada
+  intensity    Int @default(50) // 0-100, intensidade do evento
+  
+  // Momentum/clima
+  momentumChange Int @default(0) // -100 a +100
+  crowdReaction  Int @default(0) // -100 a +100
+  
+  timestamp DateTime @default(now())
+  
+  @@map("match_events")
+}
+
+model GameMomentum {
+  id          String @id @default(cuid())
+  matchId     String
+  setNumber   Int
+  pointNumber Int
+  
+  match Match @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  
+  // Momentum por time (-100 a +100)
+  homeMomentum Int @default(0)
+  awayMomentum Int @default(0)
+  
+  // Fatores que influenciam
+  consecutivePoints Json // { "home": 3, "away": 0 }
+  lastEvents        Json // Últimos 5 eventos importantes
+  
+  // Estado psicológico
+  homePressure Int @default(50) // 0-100
+  awayPressure Int @default(50)
+  
+  // Torcida
+  crowdSupport String @default("neutral") // "home", "away", "neutral"
+  crowdLevel   Int @default(50)
+  
+  timestamp DateTime @default(now())
+  
+  @@unique([matchId, setNumber, pointNumber])
+  @@map("game_momentum")
+}
+
+model PlayerMatchStats {
+  id         String @id @default(cuid())
+  matchId    String
+  playerId   String
+  playerTeam String // "home" ou "away"
+  
+  match  Match  @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  player Player @relation(fields: [playerId], references: [id])
+  
+  // Estatísticas detalhadas
+  points       Int @default(0)
+  aces         Int @default(0)
+  serviceErrors Int @default(0)
+  
+  attacks      Int @default(0)
+  attackKills  Int @default(0)
+  attackErrors Int @default(0)
+  attackBlocked Int @default(0)
+  
+  blocks       Int @default(0)
+  blockSolos   Int @default(0)
+  blockAssists Int @default(0)
+  
+  digs         Int @default(0)
+  defenseErrors Int @default(0)
+  
+  receptions   Int @default(0)
+  receptionErrors Int @default(0)
+  
+  sets         Int @default(0)
+  setErrors    Int @default(0)
+  
+  // Performance contextual
+  clutchPlays     Int @default(0) // Jogadas decisivas
+  momentumShifts  Int @default(0) // Mudanças de momentum causadas
+  
+  // Eficiência (calculada)
+  attackEfficiency  Float @default(0.0)
+  receptionQuality  Float @default(0.0)
+  overallRating     Int @default(0)
+  
+  @@unique([matchId, playerId])
+  @@map("player_match_stats")
+}
+
+enum EventType {
+  SERVE
+  ATTACK
+  BLOCK
+  DEFENSE
+  SET_ASSIST
+  RECEPTION
+  ERROR
+  TIMEOUT
+  SUBSTITUTION
+  SET_END
+  MATCH_END
+}
+
+enum GameMoment {
+  EARLY_SET      // Início do set
+  MID_SET        // Meio do set
+  LATE_SET       // Final do set
+  SET_POINT      // Set point
+  MATCH_POINT    // Match point
+  TIE_BREAK      // Tie-break
+  CRUCIAL_MOMENT // Momento decisivo
+}

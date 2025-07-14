@@ -1,0 +1,58 @@
+model Team {
+  id       String @id @default(cuid())
+  userId   String
+  name     String
+  formation TeamFormation @default(SIX_ZERO)
+  isActive Boolean @default(true)
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Slots do time (6 titulares + reservas)
+  slots     TeamSlot[]
+  
+  // Estatísticas do time
+  chemistry    Int @default(50) // 0-100
+  overallRating Int @default(0) // Calculado
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Partidas
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
+  
+  @@map("teams")
+}
+
+model TeamSlot {
+  id       String @id @default(cuid())
+  teamId   String
+  playerId String?
+  
+  team   Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  player Player? @relation(fields: [playerId], references: [id], onDelete: SetNull)
+  
+  position    SlotPosition
+  isStarter   Boolean @default(false)
+  slotNumber  Int // 1-6 para titulares, 7+ para reservas
+  
+  @@unique([teamId, position, isStarter])
+  @@unique([teamId, slotNumber])
+  @@map("team_slots")
+}
+
+enum TeamFormation {
+  SIX_ZERO    // 6x0
+  FIVE_ONE    // 5x1  
+  FOUR_TWO    // 4x2
+}
+
+enum SlotPosition {
+  POSITION_1 // Saque
+  POSITION_2 // Saída de rede
+  POSITION_3 // Meio de rede
+  POSITION_4 // Entrada de rede
+  POSITION_5 // Fundo esquerda
+  POSITION_6 // Fundo centro
+  BENCH      // Reserva
+}

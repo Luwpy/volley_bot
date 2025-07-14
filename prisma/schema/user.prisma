@@ -1,0 +1,62 @@
+model User {
+    id       String  @id // Discord user ID
+    username String
+    nickname String? // Nome no jogo
+    level    Int     @default(1)
+    xp       Int     @default(0)
+    coins    Int     @default(1000)
+    gems     Int     @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    lastSeen  DateTime @default(now())
+
+    // Relacionamentos
+    teams        Team[]
+    userPlayers  UserPlayer[]
+    homeMatches  Match[]           @relation("HomeUser")
+    awayMatches  Match[]           @relation("AwayUser")
+    transactions Transaction[]
+    achievements UserAchievement[]
+
+    // Configurações
+    language      String  @default("pt")
+    notifications Boolean @default(true)
+
+    @@map("users")
+}
+
+model UserStats {
+    userId String @id
+    user   User   @relation(fields: [userId], references: [id])
+
+    // Estatísticas gerais
+    totalMatches Int @default(0)
+    wins         Int @default(0)
+    losses       Int @default(0)
+    draws        Int @default(0)
+
+    // Liga/Ranking
+    currentLeague League @default(BRONZE)
+    rankingPoints Int    @default(1000)
+    highestLeague League @default(BRONZE)
+
+    // Temporada atual
+    seasonWins   Int @default(0)
+    seasonLosses Int @default(0)
+    seasonPoints Int @default(0)
+
+    updatedAt DateTime @updatedAt
+
+    @@map("user_stats")
+}
+
+enum League {
+    BRONZE
+    SILVER
+    GOLD
+    PLATINUM
+    DIAMOND
+    MASTER
+    GRANDMASTER
+}

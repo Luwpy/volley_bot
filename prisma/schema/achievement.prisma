@@ -1,0 +1,55 @@
+model Achievement {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  category    AchievementCategory
+  
+  // Requisitos
+  requirements Json // Condições para desbloquear
+  
+  // Recompensas
+  rewards Json // { "coins": 1000, "gems": 50, "player_pack": 1 }
+  
+  // Metadados
+  iconUrl    String?
+  rarity     AchievementRarity @default(COMMON)
+  points     Int @default(10) // Pontos de achievement
+  
+  isActive   Boolean @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Usuários que desbloquearam
+  userAchievements UserAchievement[]
+  
+  @@map("achievements")
+}
+
+model UserAchievement {
+  userId        String
+  achievementId String
+  
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  
+  unlockedAt DateTime @default(now())
+  progress   Json?    // Progresso atual para achievements incrementais
+  
+  @@id([userId, achievementId])
+  @@map("user_achievements")
+}
+
+enum AchievementCategory {
+  MATCHES
+  COLLECTION
+  EVOLUTION
+  SPECIAL
+  SOCIAL
+}
+
+enum AchievementRarity {
+  COMMON
+  RARE
+  EPIC
+  LEGENDARY
+}
