@@ -1,0 +1,7 @@
+import { z } from "zod";
+
+export const envSchema = z.object({
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional(),
+    DATABASE_URL: z.url("Database URL is required").min(1)
+});
