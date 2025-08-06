@@ -1,15 +1,13 @@
 model Team {
-  id   String  @id @default(cuid())
-  name String
-  tag  String?
-
-  averageLevel  Float @default(0)
-  totalPower    Int   @default(0)
-  teamChemistry Int   @default(50)
-
-  isActive Boolean @default(true)
-  wins     Int     @default(0)
-  losses   Int     @default(0)
+  id            String    @id @default(cuid())
+  name          String
+  tag           String?
+  averageLevel  Float     @default(0)
+  totalPower    Int       @default(0)
+  teamChemistry Int       @default(50)
+  isActive      Boolean   @default(true)
+  wins          Int       @default(0)
+  losses        Int       @default(0)
 
   captainId String? @unique
   captain   Character? @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: SetNull)
@@ -20,36 +18,29 @@ model Team {
   guildId String
   ownerId String
 
-  guild   Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
-  owner   Member       @relation("TeamOwner", fields: [ownerId], references: [id])
-  members TeamMember[]
+  guild  Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  owner  Member @relation("TeamOwner", fields: [ownerId], references: [id])
 
-  homeMatches Match[] @relation("HomeTeam")
-  awayMatches Match[] @relation("AwayTeam")
+  members      TeamMember[]
+  homeMatches  Match[] @relation("HomeTeam")
+  awayMatches  Match[] @relation("AwayTeam")
 
   @@map("teams")
 }
 
-
-
 model TeamMember {
-    id        String   @id @default(cuid())
-    position  Position // Position they play in this team
-    isStarter Boolean  @default(false)
-    joinedAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  position    Position
+  isStarter   Boolean  @default(false)
+  joinedAt    DateTime @default(now())
+  chemistry   Int      @default(50)
 
-    // Performance with this team
-    chemistry Int @default(50) // How well they mesh with teammates
+  teamId      String
+  characterId String
 
-    // Foreign keys
-    teamId      String
-    characterId String
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
-    // Relations
-    team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-    character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
-    // Prevent duplicate character in same team
-    @@unique([teamId, characterId])
-    @@map("team_members")
+  @@unique([teamId, characterId])
+  @@map("team_members")
 }

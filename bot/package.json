@@ -11,8 +11,8 @@
     "watch:dev": "bun --watch --env-file .env.dev ./src/index.ts",
     "start": "bun --env-file .env .",
     "start:dev": "bun --env-file .env.dev .",
-    "prestart": "prisma migrate deploy",
-    "postinstall": "prisma generate"
+    "prestart": "bunx prisma migrate deploy",
+    "postinstall": "bunx prisma generate"
   },
   "dependencies": {
     "@fastify/cors": "10.0.1",

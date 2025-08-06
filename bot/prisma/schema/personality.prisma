@@ -1,18 +1,15 @@
 model Personality {
-    id          String   @id @default(cuid())
-    name        String   @unique
-    description String
-    position    Position
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  position    Position
+  effects     String
+  traits      String
+  playStyle   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-    effects String
+  characters Character[]
 
-    traits    String
-    playStyle String
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    characters Character[]
-
-    @@map("personalities")
+  @@map("personalities")
 }

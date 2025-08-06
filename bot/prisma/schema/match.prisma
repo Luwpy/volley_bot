@@ -1,62 +1,44 @@
 model Match {
-  id        String      @id @default(cuid())
-  matchType MatchType
-  status    MatchStatus @default(PENDING)
-
-  // Match Settings
-  bestOf Int @default(3) // Best of 3 or 5
-
-  // Results
-  homeScore Int     @default(0)
-  awayScore Int     @default(0)
-  winner    String? // Team ID of winner
-
-  // Match Details (JSON with detailed simulation results)
-  matchData String? // JSON with set scores, key plays, etc.
-
+  id          String      @id @default(cuid())
+  matchType   MatchType
+  status      MatchStatus @default(PENDING)
+  bestOf      Int         @default(3)
+  homeScore   Int         @default(0)
+  awayScore   Int         @default(0)
+  winner      String?
+  matchData   Json?
   scheduledAt DateTime?
   startedAt   DateTime?
   finishedAt  DateTime?
-  createdAt   DateTime  @default(now())
+  createdAt   DateTime    @default(now())
 
-  // Foreign keys
   homeTeamId String
   awayTeamId String
+  homeTeam   Team @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeam   Team @relation("AwayTeam", fields: [awayTeamId], references: [id])
 
-  // Relations
-  homeTeam    Team         @relation("HomeTeam", fields: [homeTeamId], references: [id])
-  awayTeam    Team         @relation("AwayTeam", fields: [awayTeamId], references: [id])
   playerStats MatchStats[]
 
   @@map("matches")
 }
 
 model MatchStats {
-  id String @id @default(cuid())
+  id               String @id @default(cuid())
+  points           Int    @default(0)
+  kills            Int    @default(0)
+  blocks           Int    @default(0)
+  digs             Int    @default(0)
+  assists          Int    @default(0)
+  aces             Int    @default(0)
+  errors           Int    @default(0)
+  attackAttempts   Int    @default(0)
+  attackHits       Int    @default(0)
+  blockAttempts    Int    @default(0)
+  serveAttempts    Int    @default(0)
+  experienceGained Int    @default(0)
+  matchId          String
+  characterId      String
 
-  // Performance stats
-  points  Int @default(0)
-  kills   Int @default(0)
-  blocks  Int @default(0)
-  digs    Int @default(0)
-  assists Int @default(0)
-  aces    Int @default(0)
-  errors  Int @default(0)
-
-  // Advanced stats
-  attackAttempts Int @default(0)
-  attackHits     Int @default(0)
-  blockAttempts  Int @default(0)
-  serveAttempts  Int @default(0)
-
-  // Experience gained
-  experienceGained Int @default(0)
-
-  // Foreign keys
-  matchId     String
-  characterId String
-
-  // Relations
   match     Match     @relation(fields: [matchId], references: [id], onDelete: Cascade)
   character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
@@ -64,17 +46,16 @@ model MatchStats {
   @@map("match_stats")
 }
 
-
 enum MatchType {
-  SCRIMMAGE       // Friendly practice match
-  RANKED          // Competitive ranked match
-  TOURNAMENT      // Tournament match
-  CHAMPIONSHIP    // Special championship match
+  SCRIMMAGE
+  RANKED
+  TOURNAMENT
+  CHAMPIONSHIP
 }
 
 enum MatchStatus {
-  PENDING         // Match scheduled but not started
-  IN_PROGRESS     // Match currently being played
-  FINISHED        // Match completed
-  CANCELLED       // Match cancelled
+  PENDING
+  IN_PROGRESS
+  FINISHED
+  CANCELLED
 }

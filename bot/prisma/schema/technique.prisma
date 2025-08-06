@@ -1,37 +1,29 @@
 model Technique {
-  id          String      @id @default(cuid())
-  name        String      @unique
-  description String
-  category    TechniqueType
-  difficulty  Int         // 1-5 difficulty to learn
-  
-  // Requirements to learn
-  requiredLevel    Int @default(1)
-  requiredPower    Int @default(0)
-  requiredSpeed    Int @default(0)
-  requiredTechnique Int @default(0)
-  requiredJump     Int @default(0)
-  requiredMental   Int @default(0)
-  
-  // Array of allowed positions
-  allowedPositions Position[] // JSON array of positions that can learn this
-  
-  // Effects when used
-  effects     Json   // JSON string with technique effects
-  
-  createdAt   DateTime @default(now())
-  
-  // Relations
+  id                String   @id @default(cuid())
+  name              String   @unique
+  description       String
+  category          TechniqueType
+  difficulty        Int
+  requiredLevel     Int      @default(1)
+  requiredPower     Int      @default(0)
+  requiredSpeed     Int      @default(0)
+  requiredTechnique Int      @default(0)
+  requiredJump      Int      @default(0)
+  requiredMental    Int      @default(0)
+  allowedPositions  Position[]
+  effects           Json
+  createdAt         DateTime @default(now())
+
   characterTechniques CharacterTechnique[]
 
   @@map("techniques")
 }
 
 enum TechniqueType {
-  ATTACK      // Spikes, quick attacks
-  SERVE       // Different serving techniques
-  BLOCK       // Blocking techniques
-  RECEIVE     // Digging and receiving
-  SET         // Setting techniques
-  SPECIAL     // Unique/advanced techniques
+  ATTACK
+  SERVE
+  BLOCK
+  RECEIVE
+  SET
+  SPECIAL
 }

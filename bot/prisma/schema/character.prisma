@@ -3,8 +3,7 @@ model Character {
   name       String
   level      Int    @default(1)
   experience Int    @default(0)
-
-  height Int @default(170)
+  height     Int    @default(170)
 
   power     Int @default(50)
   speed     Int @default(50)
@@ -38,91 +37,78 @@ model Character {
   trainingRecords   TrainingRecord[]
   matchStats        MatchStats[]
   teamMemberships   TeamMember[]
-  
 
-  captainOf Team? @relation("TeamCaptain")
-
+  captainOf         Team? @relation("TeamCaptain")
 }
 
-
 model CharacterTechnique {
-    id          String @id @default(cuid())
-    proficiency Int    @default(1)
-    experience  Int    @default(0)
+  id          String @id @default(cuid())
+  proficiency Int    @default(1)
+  experience  Int    @default(0)
 
-    characterId String
-    techniqueId String
+  characterId String
+  techniqueId String
 
-    character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    technique Technique @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  technique Technique @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
 
-    @@unique([characterId, techniqueId])
-    @@map("character_techniques")
+  @@unique([characterId, techniqueId])
+  @@map("character_techniques")
 }
 
 model TrainingRecord {
-    id           String       @id @default(cuid())
-    trainingType TrainingType
-    duration     Int // minutes
-    intensity    Int // 1-5 intensity level
+  id           String       @id @default(cuid())
+  trainingType TrainingType
+  duration     Int
+  intensity    Int
 
-    // Stats gained from training
-    powerGain     Int @default(0)
-    speedGain     Int @default(0)
-    techniqueGain Int @default(0)
-    jumpGain      Int @default(0)
-    staminaGain   Int @default(0)
-    mentalGain    Int @default(0)
+  powerGain     Int @default(0)
+  speedGain     Int @default(0)
+  techniqueGain Int @default(0)
+  jumpGain      Int @default(0)
+  staminaGain   Int @default(0)
+  mentalGain    Int @default(0)
 
-    // Energy/motivation cost
-    energyCost     Int @default(0)
-    motivationCost Int @default(0)
+  energyCost     Int @default(0)
+  motivationCost Int @default(0)
 
-    completedAt DateTime @default(now())
+  completedAt DateTime @default(now())
+  characterId String
 
-    // Foreign keys
-    characterId String
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
 
-    // Relations
-    character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-
-    @@map("training_records")
+  @@map("training_records")
 }
 
 model CharacterItem {
-    id       String  @id @default(cuid())
-    quantity Int     @default(1)
-    equipped Boolean @default(false)
+  id         String  @id @default(cuid())
+  quantity   Int     @default(1)
+  equipped   Boolean @default(false)
+  characterId String
+  itemId      String
 
-    // Foreign keys
-    characterId String
-    itemId      String
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  item      Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
 
-    // Relations
-    character      Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-    item           Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
-    
-
-    // Prevent duplicate character-item pairs
-    @@unique([characterId, itemId])
-    @@map("character_items")
-}
-
-enum TrainingType {
-    POWER_TRAINING // Weight training, spike practice
-    SPEED_TRAINING // Agility, footwork drills
-    TECHNIQUE_TRAINING // Ball handling, precision
-    JUMP_TRAINING // Plyometrics, vertical training
-    STAMINA_TRAINING // Endurance, cardio
-    MENTAL_TRAINING // Strategy, focus exercises
-    TEAM_PRACTICE // Scrimmage, coordination
-    RECOVERY // Rest and recovery
+  @@unique([characterId, itemId])
+  @@map("character_items")
 }
 
 enum Position {
-    WS // Wingspiker
-    SE // Setter
-    MB // Middle Blocker
-    LB // Libero
-    OH // Outside Hitter
+  WS
+  SE
+  MB
+  LB
+  OH
+}
+
+enum TrainingType {
+  POWER_TRAINING
+  SPEED_TRAINING
+  TECHNIQUE_TRAINING
+  JUMP_TRAINING
+  STAMINA_TRAINING
+  MENTAL_TRAINING
+  TEAM_PRACTICE
+  RECOVERY
 }
