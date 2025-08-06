@@ -1,44 +1,46 @@
 model Team {
-  id        String   @id @default(cuid())
-  name      String
-  tag       String?  // Team abbreviation (3-4 letters)
-  
+  id   String  @id @default(cuid())
+  name String
+  tag  String? // Team abbreviation (3-4 letters)
+
   // Team Stats (calculated from members)
   averageLevel  Float @default(0)
   totalPower    Int   @default(0)
   teamChemistry Int   @default(50) // How well the team works together
-  
+
   // Team Status
-  isActive    Boolean @default(true)
-  wins        Int     @default(0)
-  losses      Int     @default(0)
-  
+  isActive Boolean @default(true)
+  wins     Int     @default(0)
+  losses   Int     @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Foreign keys
   guildId   String
   ownerId   String
+  captainId String?
 
   // Relations
-  guild     Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
-  owner     Member       @relation("TeamOwner", fields: [ownerId], references: [id])
-  members   TeamMember[]
-  homeMatches Match[]    @relation("HomeTeam")
-  awayMatches Match[]    @relation("AwayTeam")
+  guild       Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  owner       Member       @relation("TeamOwner", fields: [ownerId], references: [id])
+  captain     Character?   @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: SetNull)
+  members     TeamMember[]
+  homeMatches Match[]      @relation("HomeTeam")
+  awayMatches Match[]      @relation("AwayTeam")
 
   @@map("teams")
 }
 
 model TeamMember {
-  id          String   @id @default(cuid())
-  position    Position // Position they play in this team
-  isStarter   Boolean  @default(false)
-  joinedAt    DateTime @default(now())
-  
+  id        String   @id @default(cuid())
+  position  Position // Position they play in this team
+  isStarter Boolean  @default(false)
+  joinedAt  DateTime @default(now())
+
   // Performance with this team
-  chemistry   Int      @default(50) // How well they mesh with teammates
-  
+  chemistry Int @default(50) // How well they mesh with teammates
+
   // Foreign keys
   teamId      String
   characterId String
