@@ -38,6 +38,8 @@ model Character {
     trainingRecords   TrainingRecord[]
     matchStats        MatchStats[]
     teamMemberships   TeamMember[]
+    Team              Team[]
+    Team              Team[]
 }
 
 model CharacterTechnique {
@@ -55,63 +57,63 @@ model CharacterTechnique {
     @@map("character_techniques")
 }
 
-
 model TrainingRecord {
-  id          String      @id @default(cuid())
-  trainingType TrainingType
-  duration    Int         // minutes
-  intensity   Int         // 1-5 intensity level
-  
-  // Stats gained from training
-  powerGain     Int @default(0)
-  speedGain     Int @default(0)
-  techniqueGain Int @default(0)
-  jumpGain      Int @default(0)
-  staminaGain   Int @default(0)
-  mentalGain    Int @default(0)
-  
-  // Energy/motivation cost
-  energyCost     Int @default(0)
-  motivationCost Int @default(0)
-  
-  completedAt DateTime @default(now())
-  
-  // Foreign keys
-  characterId String
-  
-  // Relations
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    id           String       @id @default(cuid())
+    trainingType TrainingType
+    duration     Int // minutes
+    intensity    Int // 1-5 intensity level
 
-  @@map("training_records")
+    // Stats gained from training
+    powerGain     Int @default(0)
+    speedGain     Int @default(0)
+    techniqueGain Int @default(0)
+    jumpGain      Int @default(0)
+    staminaGain   Int @default(0)
+    mentalGain    Int @default(0)
+
+    // Energy/motivation cost
+    energyCost     Int @default(0)
+    motivationCost Int @default(0)
+
+    completedAt DateTime @default(now())
+
+    // Foreign keys
+    characterId String
+
+    // Relations
+    character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+    @@map("training_records")
 }
 
 model CharacterItem {
-  id       String @id @default(cuid())
-  quantity Int    @default(1)
-  equipped Boolean @default(false)
+    id       String  @id @default(cuid())
+    quantity Int     @default(1)
+    equipped Boolean @default(false)
 
-  // Foreign keys
-  characterId String
-  itemId      String
+    // Foreign keys
+    characterId String
+    itemId      String
 
-  // Relations
-  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
-  item      Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+    // Relations
+    character      Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    item           Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+    captainedTeams Team[]    @relation("TeamCaptain")
 
-  // Prevent duplicate character-item pairs
-  @@unique([characterId, itemId])
-  @@map("character_items")
+    // Prevent duplicate character-item pairs
+    @@unique([characterId, itemId])
+    @@map("character_items")
 }
 
 enum TrainingType {
-  POWER_TRAINING      // Weight training, spike practice
-  SPEED_TRAINING      // Agility, footwork drills
-  TECHNIQUE_TRAINING  // Ball handling, precision
-  JUMP_TRAINING       // Plyometrics, vertical training
-  STAMINA_TRAINING    // Endurance, cardio
-  MENTAL_TRAINING     // Strategy, focus exercises
-  TEAM_PRACTICE       // Scrimmage, coordination
-  RECOVERY            // Rest and recovery
+    POWER_TRAINING // Weight training, spike practice
+    SPEED_TRAINING // Agility, footwork drills
+    TECHNIQUE_TRAINING // Ball handling, precision
+    JUMP_TRAINING // Plyometrics, vertical training
+    STAMINA_TRAINING // Endurance, cardio
+    MENTAL_TRAINING // Strategy, focus exercises
+    TEAM_PRACTICE // Scrimmage, coordination
+    RECOVERY // Rest and recovery
 }
 
 enum Position {

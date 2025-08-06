@@ -1,12 +1,4 @@
-import { Position } from "@prisma/client";
 import { type InteractionReplyOptions } from "discord.js";
-
-type createCharacterInput = {
-    memberId: string
-    name: string
-    primaryPosition: Position
-    personalityId: string 
-}
 
 export function characterCreateMenu<R>(): R {
     
