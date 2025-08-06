@@ -1,0 +1,9 @@
+import { validateEnv } from "#base";
+import { z } from "zod";
+
+export const env = validateEnv(z.object({
+    BOT_TOKEN: z.string("Discord Bot Token is required").min(1),
+    WEBHOOK_LOGS_URL: z.url().optional(),
+    DATABASE_URL: z.url("Database URL is required").min(1),
+    SERVER_PORT: z.coerce.number().min(1).optional()
+}));
