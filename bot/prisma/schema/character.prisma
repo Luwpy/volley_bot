@@ -1,0 +1,123 @@
+model Character {
+    id         String @id @default(cuid())
+    name       String
+    level      Int    @default(1)
+    experience Int    @default(0)
+
+    height Int @default(170) //cm
+
+    power     Int @default(50) // Attack power/spike strength
+    speed     Int @default(50) // Movement and reaction speed
+    technique Int @default(50) // Ball handling and precision
+    jump      Int @default(50) // Vertical jump ability
+    stamina   Int @default(50) // Endurance and energy
+    mental    Int @default(50) // Focus and decision making
+
+    attack  Int @default(50) // Spiking ability
+    block   Int @default(50) // Blocking ability
+    receive Int @default(50) // Receiving and digging
+    serve   Int @default(50) // Serving ability
+    set     Int @default(50) // Setting ability
+
+    energy     Int @default(100)
+    motivation Int @default(100)
+
+    primaryPosition   Position  @default(WS)
+    secondaryPosition Position?
+    personalityId     String // Reference to pre-made personality
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    Member   Member? @relation(fields: [memberId], references: [id])
+    memberId String?
+
+    personality       Personality          @relation(fields: [personalityId], references: [id])
+    items             CharacterItem[]
+    learnedTechniques CharacterTechnique[]
+    trainingRecords   TrainingRecord[]
+    matchStats        MatchStats[]
+    teamMemberships   TeamMember[]
+}
+
+model CharacterTechnique {
+    id          String @id @default(cuid())
+    proficiency Int    @default(1)
+    experience  Int    @default(0)
+
+    characterId String
+    techniqueId String
+
+    character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+    technique Technique @relation(fields: [techniqueId], references: [id], onDelete: Cascade)
+
+    @@unique([characterId, techniqueId])
+    @@map("character_techniques")
+}
+
+
+model TrainingRecord {
+  id          String      @id @default(cuid())
+  trainingType TrainingType
+  duration    Int         // minutes
+  intensity   Int         // 1-5 intensity level
+  
+  // Stats gained from training
+  powerGain     Int @default(0)
+  speedGain     Int @default(0)
+  techniqueGain Int @default(0)
+  jumpGain      Int @default(0)
+  staminaGain   Int @default(0)
+  mentalGain    Int @default(0)
+  
+  // Energy/motivation cost
+  energyCost     Int @default(0)
+  motivationCost Int @default(0)
+  
+  completedAt DateTime @default(now())
+  
+  // Foreign keys
+  characterId String
+  
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  @@map("training_records")
+}
+
+model CharacterItem {
+  id       String @id @default(cuid())
+  quantity Int    @default(1)
+  equipped Boolean @default(false)
+
+  // Foreign keys
+  characterId String
+  itemId      String
+
+  // Relations
+  character Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  item      Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  // Prevent duplicate character-item pairs
+  @@unique([characterId, itemId])
+  @@map("character_items")
+}
+
+enum TrainingType {
+  POWER_TRAINING      // Weight training, spike practice
+  SPEED_TRAINING      // Agility, footwork drills
+  TECHNIQUE_TRAINING  // Ball handling, precision
+  JUMP_TRAINING       // Plyometrics, vertical training
+  STAMINA_TRAINING    // Endurance, cardio
+  MENTAL_TRAINING     // Strategy, focus exercises
+  TEAM_PRACTICE       // Scrimmage, coordination
+  RECOVERY            // Rest and recovery
+}
+
+enum Position {
+    WS // Wingspiker
+    Se // Setter
+    MB // Middle Blocker
+    LB // Libero
+    OH // Outside Hitter
+}

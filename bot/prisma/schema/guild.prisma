@@ -6,7 +6,7 @@ model Guild {
     updatedAt DateTime @updatedAt
 
     members Member[]
-    characters Character[]
+    teams Team[]
 
     @@map("guilds")
 }

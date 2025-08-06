@@ -1,0 +1,32 @@
+model Item {
+  id          String @id @default(cuid())
+  name        String
+  description String
+  type        ItemType
+  rarity      Rarity   @default(COMMON)
+  
+  // Item effects (JSON for flexibility)
+  effects     String   // JSON string with stat boosts, abilities, etc.
+  
+  createdAt   DateTime @default(now())
+  
+  // Relations
+  characterItems CharacterItem[]
+
+  @@map("items")
+}
+
+enum ItemType {
+  EQUIPMENT    // Shoes, knee pads, etc.
+  CONSUMABLE   // Energy drinks, healing items
+  TRAINING     // Training equipment that gives temporary boosts
+  SPECIAL      // Special items with unique effects
+}
+
+enum Rarity {
+  COMMON
+  UNCOMMON
+  RARE
+  EPIC
+  LEGENDARY
+}

@@ -10,19 +10,20 @@ model Member {
 
     @@id([id, guildId])
     @@map("members")
+    ownedTeams Team[] @relation("TeamOwner")
 }
 
-model Character {
-    id String @default(uuid())
-    memberId String
-    member Member @relation(fields: [memberId], references: [id])
-    guildId String
-    guild   Guild  @relation(fields: [guildId], references: [id])
-    
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    @@id([id, memberId])
-    @@map("characters")
-}
+// model Character {
+//     id String @default(uuid())
+//     memberId String
+//     member Member @relation(fields: [memberId], references: [id])
+//     guildId String
+//     guild   Guild  @relation(fields: [guildId], references: [id])
+//     
+// 
+//     createdAt DateTime @default(now())
+//     updatedAt DateTime @updatedAt
+// 
+//     @@id([id, memberId])
+//     @@map("characters")
+// }
