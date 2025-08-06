@@ -1,38 +1,36 @@
 model Team {
-    id   String  @id @default(cuid())
-    name String
-    tag  String? // Team abbreviation (3-4 letters)
+  id   String  @id @default(cuid())
+  name String
+  tag  String?
 
-    // Team Stats (calculated from members)
-    averageLevel  Float @default(0)
-    totalPower    Int   @default(0)
-    teamChemistry Int   @default(50) // How well the team works together
+  averageLevel  Float @default(0)
+  totalPower    Int   @default(0)
+  teamChemistry Int   @default(50)
 
-    // Team Status
-    isActive Boolean @default(true)
-    wins     Int     @default(0)
-    losses   Int     @default(0)
+  isActive Boolean @default(true)
+  wins     Int     @default(0)
+  losses   Int     @default(0)
 
-    captainId String
+  captainId String? @unique
+  captain   Character? @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: SetNull)
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    // Foreign keys
-    guildId String
-    ownerId String
+  guildId String
+  ownerId String
 
-    // Relations
-    guild   Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
-    owner   Member       @relation("TeamOwner", fields: [ownerId], references: [id])
-    members TeamMember[]
-    captain Character?   @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: SetNull)
+  guild   Guild        @relation(fields: [guildId], references: [id], onDelete: Cascade)
+  owner   Member       @relation("TeamOwner", fields: [ownerId], references: [id])
+  members TeamMember[]
 
-    homeMatches Match[] @relation("HomeTeam")
-    awayMatches Match[] @relation("AwayTeam")
+  homeMatches Match[] @relation("HomeTeam")
+  awayMatches Match[] @relation("AwayTeam")
 
-    @@map("teams")
+  @@map("teams")
 }
+
+
 
 model TeamMember {
     id        String   @id @default(cuid())

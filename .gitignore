@@ -1,47 +1,52 @@
-# Diretórios ignorados
+# Node/Bun dependencies and build output
 **/node_modules/
 **/build/
 **/dist/
-**/discloud/
-**/deprecated/
+bun.lockb
 
-# Prisma migrations (mantendo apenas os arquivos .prisma e schema.prisma)
+# Prisma: keep only .prisma files and schema.prisma
 **/prisma/migrations/
-**/prisma/migration_lock.toml
+!**/prisma/schema/
+!**/prisma/schema.prisma
+!**/prisma/*.prisma
 
-# Arquivos sensíveis e de ambiente
+# Environment and sensitive files
 **/.env
 **/.env.*
 !.env.example
 
-# Arquivos temporários e de output
+# Discloud
+**/discloud/
+**/discloud.config
+
+# Editor/IDE
+.vscode/
+.idea/
+*.sw?
+*.code-workspace
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Logs and debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary/output files
 *.zip
 *.sqlite
 *.sql
 *.db
 *.development.json
 
-# Arquivos de configuração específicos
-/firebase.json
-
-# Discloud
-**/discloud.config
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-bun.lockb
-
-# Sistema operacional
-.DS_Store
-Thumbs.db
-
-# IDE/editor
-.vscode/
-.idea/
-*.sw?
-
-# Outros
+# Executables
 *.exe
+
+# Firebase (if used)
+firebase.json
+
+# Misc
+deprecated/

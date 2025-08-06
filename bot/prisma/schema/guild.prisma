@@ -1,5 +1,5 @@
 model Guild {
-    id       String         @id @unique
+    id       String         @id 
     channels GuildChannel[]
 
     createdAt DateTime @default(now())

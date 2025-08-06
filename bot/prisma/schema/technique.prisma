@@ -13,11 +13,11 @@ model Technique {
   requiredJump     Int @default(0)
   requiredMental   Int @default(0)
   
-  // Position restrictions
+  // Array of allowed positions
   allowedPositions Position[] // JSON array of positions that can learn this
   
   // Effects when used
-  effects     String   // JSON string with technique effects
+  effects     Json   // JSON string with technique effects
   
   createdAt   DateTime @default(now())
   

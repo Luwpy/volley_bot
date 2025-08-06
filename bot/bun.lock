@@ -6,6 +6,7 @@
       "dependencies": {
         "@fastify/cors": "10.0.1",
         "@magicyan/discord": "1.5.1",
+        "@prisma/client": "^6.13.0",
         "@reliverse/reglob": "1.0.0",
         "chalk": "5.4.1",
         "discord.js": "14.21.0",
@@ -46,6 +47,8 @@
     "@magicyan/core": ["@magicyan/core@1.1.1", "", {}, "sha512-QmxcKv4fT8yQzmTBF+Ee/iPB8NETbgGTp2Wi04p1ovem8poJTXpDnaEEV3Lx3H9BqcU/ZEAsf5dhM+yb62iquQ=="],
 
     "@magicyan/discord": ["@magicyan/discord@1.5.1", "", { "dependencies": { "@magicyan/core": "^1.1.1" }, "peerDependencies": { "discord.js": "^14.19.3" } }, "sha512-ejyC51E8rN/KjTN3Xj57HZgYhA4bDj1bnT4a45SuJOEhCVf7Sm+HTDpLGr6zu69csuH6Oul6KZ7xjEpoPZw+6w=="],
+
+    "@prisma/client": ["@prisma/client@6.13.0", "", { "peerDependencies": { "prisma": "*", "typescript": ">=5.1.0" }, "optionalPeers": ["prisma", "typescript"] }, "sha512-8m2+I3dQovkV8CkDMluiwEV1TxV9EXdT6xaCz39O6jYw7mkf5gwfmi+cL4LJsEPwz5tG7sreBwkRpEMJedGYUQ=="],
 
     "@reliverse/reglob": ["@reliverse/reglob@1.0.0", "", { "dependencies": { "@reliverse/rematch": "^1.1.0", "fdir": "^6.4.4" } }, "sha512-LvpzxRrNuQatkCzpJRhkAm/vOpfIO2ImJ8dt3BO46VUCD4pYIO+20M+5zugKoprvs4IS4b1i8d/t6hN9PgglnA=="],
 
