@@ -1,20 +1,20 @@
-import { brBuilder, createContainer, createRow } from "@magicyan/discord";
-import { ButtonBuilder, ButtonStyle, type InteractionReplyOptions } from "discord.js";
+import { createContainer } from "@magicyan/discord";
+import { InteractionReplyOptions } from "discord.js";
+import { CharacterCreationState } from "shared/character/create.js";
+export interface CharacterCreationData {
+    name?: string;
+    primaryPosition?: Position;
+    secondaryPosition?: Position;
+    personalityId?: string;
+}
 
-export function createMenu<R>(): R {
+
+
+export function characterCreateMenu<R>(state: CharacterCreationState = { step: 'name' }): R {
+
     const container = createContainer(constants.colors.azoxo,
-        brBuilder(
-            "## create menu"
-        ),
-        createRow(
-            new ButtonBuilder({
-                customId: "menu/action",
-                label: ">",
-                style: ButtonStyle.Success
-            })
-        )
-    );
 
+    )
     return ({
         flags: ["Ephemeral", "IsComponentsV2"],
         components: [container]
