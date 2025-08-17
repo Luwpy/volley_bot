@@ -1,6 +1,6 @@
-import { createContainer } from "@magicyan/discord";
+import { brBuilder, createContainer, createSeparator } from "@magicyan/discord";
 import { InteractionReplyOptions } from "discord.js";
-import { CharacterCreationState } from "shared/character/create.js";
+import { CharacterCreationStep, createCharacterData } from "shared/character/create.js";
 export interface CharacterCreationData {
     name?: string;
     primaryPosition?: Position;
@@ -10,9 +10,17 @@ export interface CharacterCreationData {
 
 
 
-export function characterCreateMenu<R>(state: CharacterCreationState = { step: 'name' }): R {
+export function characterCreateMenu<R>(step: CharacterCreationStep): R {
+    const steps = createCharacterData();
+    const data = steps[step];
 
-    const container = createContainer(constants.colors.azoxo,
+    const container = createContainer(data.color,
+        brBuilder(`${data.emoji} **${data.title}**`,
+            data.description,
+
+        ),
+        createSeparator(),
+        data.row as unknown as import("discord.js").ActionRowBuilder<import("discord.js").MessageActionRowComponentBuilder>
 
     )
     return ({

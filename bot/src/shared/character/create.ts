@@ -3,7 +3,8 @@ import { createRow } from "@magicyan/discord";
 import { ButtonBuilder, ButtonStyle } from "discord.js";
 
 
-export type CharacterCreationStep = 'name' | 'position' | 'personality' | 'confirm';
+export type CharacterCreationStep = 'name' | 'position' | 'secondaryPosition' | 'personality' | 'confirm';
+
 export interface CharacterCreationState {
     label: string;
     title: string;
@@ -21,7 +22,12 @@ const positionOptions = [
     { label: "Outside Hitter", value: "OH", emoji: "🚀" }
 ];
 
-export function createCharacterData(): Record<CharacterCreationStep, CharacterCreationState> {
+// Helper to get secondary options excluding the primary
+export function getSecondaryPositionOptions(primaryValue: string) {
+    return positionOptions.filter(option => option.value !== primaryValue);
+}
+
+export function createCharacterData(primaryPosition?: string): Record<CharacterCreationStep, CharacterCreationState> {
     return {
         name: {
             label: "Name",
@@ -45,12 +51,30 @@ export function createCharacterData(): Record<CharacterCreationStep, CharacterCr
             emoji: "📍",
             row: createRow(
                 new StringSelectMenuBuilder({
-                    custom_id: "character/create/position",
+                    custom_id: "character/create/position/primary",
                     placeholder: "Select a position",
                     options: positionOptions.map(option => ({
                         label: option.label,
                         value: option.value,
-                        emoji: { name: option.emoji }
+                        emoji: option.emoji ? { name: option.emoji } : undefined
+                    }))
+                })
+            )
+        },
+        secondaryPosition: {
+            label: "Secondary Position",
+            title: "Secondary Character Position",
+            description: "Choose a secondary position for your character.",
+            color: constants.colors.azoxo,
+            emoji: "🔄",
+            row: createRow(
+                new StringSelectMenuBuilder({
+                    custom_id: "character/create/position/secondary",
+                    placeholder: "Select a secondary position",
+                    options: getSecondaryPositionOptions(primaryPosition ?? "").map(option => ({
+                        label: option.label,
+                        value: option.value,
+                        emoji: option.emoji ? { name: option.emoji } : undefined
                     }))
                 })
             )
@@ -62,10 +86,11 @@ export function createCharacterData(): Record<CharacterCreationStep, CharacterCr
             color: constants.colors.azoxo,
             emoji: "😃",
             row: createRow(
-                new ButtonBuilder()
-                    .setCustomId("character/create/personality")
-                    .setLabel("Personality")
-                    .setStyle(ButtonStyle.Primary)
+                new ButtonBuilder({
+                    customId: "character/create/personality",
+                    label: "Personality",
+                    style: ButtonStyle.Primary
+                })
             )
         },
         confirm: {
@@ -75,10 +100,11 @@ export function createCharacterData(): Record<CharacterCreationStep, CharacterCr
             color: constants.colors.azoxo,
             emoji: "✅",
             row: createRow(
-                new ButtonBuilder()
-                    .setCustomId("character/create/confirm")
-                    .setLabel("Confirm")
-                    .setStyle(ButtonStyle.Success)
+                new ButtonBuilder({
+                    customId: "character/create/confirm",
+                    label: "Confirm",
+                    style: ButtonStyle.Success
+                })
             )
         }
     };
